@@ -3,50 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <body>
 <div style="text-align: center;">
-<br><br><h2 th:text="'Witaj!'"></h2><br><br>
+    <br>
+    <h2 th:text="'Witaj!'"></h2><br>
 
-<!--<ul>-->
+    <!--<ul>-->
 
     <!--<li th:each="medicine: ${medicines}">-->
-        <!--<span th:text="${medicine.name}"></span>-->
+    <!--<span th:text="${medicine.name}"></span>-->
     <!--</li>-->
 
-<!--</ul>-->
+    <!--</ul>-->
+    <div style="text-align: center;">
+        <p>Kliknij nagłówek kolumny tabeli, by posortować (rosnąco/malejąco)</p>
+    </div>
 
-<table class="table table-striped" style="width: 300px; margin: auto">
-    <thead class="thead-dark">
-    <tr>
-        <th>ID</th>
-        <th>Nazwa</th>
-        <th>Substancja aktywna</th>
-        <th>Dawka</th>
-        <th>Liczba tabletek/pojemność</th>
-        <th>Liczba opakowań</th>
-        <th></th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="medicine: ${medicines}">
-        <td th:text="${medicine.id}"></td>
-        <td th:text="${medicine.name}"></td>
-        <td th:text="${medicine.substance}"></td>
-        <td th:text="${medicine.dose}"></td>
-        <td th:text="${medicine.units}"></td>
-        <td th:text="${medicine.packages}"></td>
-        <td></td>
-    </tr>
-    </tbody>
-</table><br><br>
+    <table id="table" class="table table-striped" style="width: 300px; margin: auto">
+        <thead class="thead-dark">
+        <tr>
+            <th onclick="sortTable(0)">ID</th>
+            <th onclick="sortTable(1)">Nazwa</th>
+            <th onclick="sortTable(2)">Substancja aktywna</th>
+            <th onclick=" sortTable(3)">Dawka</th>
+            <th onclick="sortTable(4)">Liczba tabletek/pojemność</th>
+            <th onclick=" sortTable(5)">Liczba opakowań
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="medicine: ${medicines}">
+            <td th:text="${medicine.id}"></td>
+            <td th:text="${medicine.name}"></td>
+            <td th:text="${medicine.substance}"></td>
+            <td th:text="${medicine.dose}"></td>
+            <td th:text="${medicine.units}"></td>
+            <td th:text="${medicine.packages}"></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+    <br><br>
 
 
-<a href="/main">MAIN</a>
-<a href="/add.html">ADD</a>
-<a href="/edit.html">EDIT</a>
+    <a href="/main">MAIN</a>
+    <a href="/add.html">ADD</a>
+    <a href="/edit.html">EDIT</a>
+
+
+    <script>
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("table");
+            switching = true;
+            //Set the sorting direction to ascending:
+            dir = "asc";
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.getElementsByTagName("TR");
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    /*check if the two rows should switch place,
+                    based on the direction, asc or desc:*/
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    //Each time a switch is done, increase this count by 1:
+                    switchcount++;
+                } else {
+                    /*If no switching has been done AND the direction is "asc",
+                    set the direction to "desc" and run the while loop again.*/
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+
 </div>
 </body>
 </html>
